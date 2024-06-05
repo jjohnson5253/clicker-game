@@ -59,7 +59,7 @@ const App = () => {
             <Box align="center" mt={0}>
               <Image borderRadius="full" boxSize="20px" src="/bolt.png" alt="Bolt" />
             </Box>
-            <Text>1000 / 1000</Text>
+            <Text>10 / 10</Text>
           </HStack>
           <Button leftIcon={<FaRocket />} colorScheme="teal" size="sm">
             Boost
