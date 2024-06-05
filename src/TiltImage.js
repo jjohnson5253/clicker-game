@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Tilt from 'react-parallax-tilt';
-import { Image } from '@chakra-ui/react';
+import { Image, Text } from '@chakra-ui/react';
 import { motion, useAnimation } from 'framer-motion';
 
 const TiltImage = ({ imageSrc, altText, ...tiltProps }) => {
@@ -33,8 +33,7 @@ const TiltImage = ({ imageSrc, altText, ...tiltProps }) => {
     <div ref={containerRef} style={{ position: 'relative' }} onClick={handleClick}>
       <Tilt {...tiltProps}>
         <Image
-          borderRadius="full"
-          boxSize="150px"
+          boxSize="300px"
           src={imageSrc}
           alt={altText}
           onClick={handleClick}
@@ -52,7 +51,9 @@ const TiltImage = ({ imageSrc, altText, ...tiltProps }) => {
             color: 'white',
           }}
         >
+          <Text fontSize='4xl'>
           +1
+          </Text>
         </motion.div>
       )}
     </div>
