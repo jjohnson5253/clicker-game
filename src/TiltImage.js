@@ -19,7 +19,7 @@ const TiltImage = ({ imageSrc, altText, ...tiltProps }) => {
   useEffect(() => {
     if (isAnimating) {
       controls.start({
-        y: [clickPosition.y, clickPosition.y - 50],
+        y: [clickPosition.y - 50, clickPosition.y - 100],
         opacity: [1, 0],
         transition: {
           duration: 0.5,
