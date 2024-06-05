@@ -3,17 +3,17 @@ import Tilt from 'react-parallax-tilt';
 import { Image, Text } from '@chakra-ui/react';
 import { motion, useAnimation } from 'framer-motion';
 
-const TiltImage = ({ imageSrc, altText, ...tiltProps }) => {
+const TiltImage = ({ imageSrc, altText, onClick, ...tiltProps }) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [clickPosition, setClickPosition] = useState({ x: 0, y: 0 });
   const controls = useAnimation();
-  const containerRef = useRef(null); // Ref for the container
-  const isTouchEventRef = useRef(false); // Ref to track if it's a touch event
+  const containerRef = useRef(null);
 
   const handleClick = (event) => {
     setIsAnimating(true);
-    const rect = containerRef.current.getBoundingClientRect(); // Use container's bounding rect
+    const rect = containerRef.current.getBoundingClientRect();
     setClickPosition({ x: event.clientX - rect.left, y: event.clientY - rect.top });
+    onClick(); // Trigger the click handler passed as prop
   };
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const TiltImage = ({ imageSrc, altText, ...tiltProps }) => {
         opacity: [1, 0],
         transition: {
           duration: 0.5,
-          ease: "easeInOut",
+          ease: 'easeInOut',
         },
       }).then(() => setIsAnimating(false));
     }
@@ -36,7 +36,6 @@ const TiltImage = ({ imageSrc, altText, ...tiltProps }) => {
           boxSize="300px"
           src={imageSrc}
           alt={altText}
-          onClick={handleClick}
         />
       </Tilt>
       {isAnimating && (
@@ -51,9 +50,7 @@ const TiltImage = ({ imageSrc, altText, ...tiltProps }) => {
             color: 'white',
           }}
         >
-          <Text fontSize='4xl'>
-          +1
-          </Text>
+          <Text fontSize="4xl">+1</Text>
         </motion.div>
       )}
     </div>
