@@ -2,14 +2,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import Tilt from 'react-parallax-tilt';
 import { Image, Text } from '@chakra-ui/react';
 import { motion, useAnimation } from 'framer-motion';
+import {useHapticFeedback} from "@vkruglikov/react-telegram-web-app";
 
 const TiltImage = ({ imageSrc, altText, onClick, ...tiltProps }) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [clickPosition, setClickPosition] = useState({ x: 0, y: 0 });
   const controls = useAnimation();
   const containerRef = useRef(null);
+  const [impactOccurred] = useHapticFeedback();
 
   const handleClick = (event) => {
+    impactOccurred("medium");
     setIsAnimating(true);
     const rect = containerRef.current.getBoundingClientRect();
     setClickPosition({ x: event.clientX - rect.left, y: event.clientY - rect.top });
@@ -19,7 +22,7 @@ const TiltImage = ({ imageSrc, altText, onClick, ...tiltProps }) => {
   useEffect(() => {
     if (isAnimating) {
       controls.start({
-        y: [clickPosition.y - 50, clickPosition.y - 100],
+        y: [clickPosition.y - 50, clickPosition.y - 200],
         opacity: [1, 0],
         transition: {
           duration: 0.5,
