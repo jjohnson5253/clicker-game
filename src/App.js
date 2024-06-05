@@ -1,44 +1,71 @@
-import React, { useState } from 'react';
-import {useHapticFeedback} from "@vkruglikov/react-telegram-web-app";
+import React from 'react';
+import { Box, Text, Flex, Button, Image, Progress, VStack, HStack, Spacer, Icon } from '@chakra-ui/react';
+import { FaRocket, FaCoins, FaArrowUp, FaExchangeAlt } from 'react-icons/fa';
+import TiltImage from './TiltImage';
 
-function App() {
-
-  const [impactOccurred, notificationOccurred, selectionChanged] = useHapticFeedback();
-  
-  const [boxColor, setBoxColor] = useState('#007bff'); // initial color
-
-  const handleTap = () => {
-    console.log('Tapped!')
-    
-    impactOccurred("medium");
-    const newColor = getRandomColor(); // generate a random color
-    setBoxColor(newColor); // update the box color    //navigator.vibrate(100); // vibrate for 100ms
-  };
-
-  // helper function to generate a random color
-  function getRandomColor() {
-    const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
-    return colors[Math.floor(Math.random() * colors.length)];
-  }
-
+const App = () => {
   return (
-    <div
-      onTouchStart={handleTap}
-      onClick={handleTap}
-      style={{
-        width: 200,
-        height: 200,
-        backgroundColor: boxColor,
-        borderRadius: 10,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        cursor: 'pointer' // add a pointer cursor on hover
-      }}
-    >
-      <span style={{ fontSize: 24, color: '#fff' }}>Tap mee!</span>
-    </div>
+    <Box bg="gray.800" color="white" minH="100vh" p={4}>
+      <Flex justify="space-between" align="center">
+      </Flex>
+
+      <VStack spacing={4} mt={6} align="stretch">
+        <HStack justify="space-between">
+          <Text>Earn per tap</Text>
+          <Text>Coins to level up</Text>
+        </HStack>
+        <HStack justify="space-between">
+          <Text>+1</Text>
+          <Text>5K</Text>
+        </HStack>
+        <HStack justify="center" mt={4}>
+        <Image
+            borderRadius="full"
+            boxSize="50px"
+            src="/coin.png"
+            alt="Coin"
+          />
+          <Text fontSize="3xl" fontWeight="bold">1,438</Text>
+        </HStack>
+        <Text align="center">Level 4/10</Text>
+        <Progress colorScheme="teal" size="sm" value={20} />
+        <Box align="center" mt={4}>
+          <TiltImage
+            imageSrc="brett-head-big.png"
+            altText="Brett Head"
+            tiltReverse = "true"
+            tiltMaxAngleX={30}
+            tiltMaxAngleY={30}
+          />
+          {/*<Image
+            borderRadius="full"
+            boxSize="150px"
+            src="/brett-head-big.png"
+            alt="Brett Head"
+          />*/}
+        </Box>
+        <HStack justify="space-between">
+          <HStack justify="center" mt={4}>
+            <Box align="center" mt={0}>
+              <Image
+                borderRadius="full"
+                boxSize="20px"
+                src="/bolt.png"
+                alt="Bolt"
+              />
+            </Box>
+            <Text>1000 / 1000</Text>
+          </HStack>
+          <Button leftIcon={<FaRocket />} colorScheme="teal" size="sm">
+            Boost
+          </Button>
+        </HStack>
+      </VStack>
+
+      <Spacer />
+
+    </Box>
   );
-}
+};
 
 export default App;
