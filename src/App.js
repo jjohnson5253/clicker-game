@@ -10,6 +10,8 @@ const App = () => {
   const [score, setScore] = useState(getInitialScore);
   const [level, setLevel] = useState(getInitialLevel);
 
+  window.scrollTo(0, 0);
+
   useEffect(() => {
     localStorage.setItem('score', score);
     localStorage.setItem('level', level);
