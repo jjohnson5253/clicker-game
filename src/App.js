@@ -6,9 +6,6 @@ import TiltImage from './TiltImage';
 const App = () => {
   return (
     <Box bg="gray.800" color="white" minH="100vh" p={4}>
-      <Flex justify="space-between" align="center">
-      </Flex>
-
       <VStack spacing={4} mt={6} align="stretch">
         <HStack justify="space-between">
           <Text>Earn per tap</Text>
