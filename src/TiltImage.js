@@ -37,7 +37,6 @@ const TiltImage = ({ imageSrc, altText, ...tiltProps }) => {
           boxSize="150px"
           src={imageSrc}
           alt={altText}
-          onTouchStart={handleClick}
           onClick={handleClick}
         />
       </Tilt>
