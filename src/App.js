@@ -12,6 +12,10 @@ const App = () => {
 
   window.scrollTo(0, 0);
 
+  const telegramApp = window.Telegram.WebApp;
+  console.log("Telegram App", telegramApp);
+  telegramApp.expand();
+
   useEffect(() => {
     localStorage.setItem('score', score);
     localStorage.setItem('level', level);
