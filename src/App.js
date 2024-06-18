@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Text, Flex, Button, Image, Progress, VStack, HStack, Spacer, Icon } from '@chakra-ui/react';
-import { FaRocket, FaCoins, FaArrowUp, FaExchangeAlt } from 'react-icons/fa';
-import TiltImage from './TiltImage';
+import React, { useState, useEffect } from "react";
+import { Box, Text, useDisclosure, Button, Image, Progress, VStack, HStack, Spacer } from "@chakra-ui/react";
+import { FaRocket, FaDollarSign } from "react-icons/fa";
+import TiltImage from "./TiltImage";
+import AirdropModal from "./components/AirdropModal";
+import UpgradeModal from "./components/UpgradeModal";
 
 const App = () => {
-  const getInitialScore = () => Number(localStorage.getItem('score')) || 0;
-  const getInitialLevel = () => Number(localStorage.getItem('level')) || 1;
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: upgradeIsOpen, onOpen: upgradeOnOpen, onClose: upgradeOnClose } = useDisclosure();
+  const getInitialScore = () => Number(localStorage.getItem("score")) || 0;
+  const getInitialLevel = () => Number(localStorage.getItem("level")) || 1;
 
   const [score, setScore] = useState(getInitialScore);
   const [level, setLevel] = useState(getInitialLevel);
@@ -17,12 +21,12 @@ const App = () => {
   telegramApp.expand();
 
   useEffect(() => {
-    localStorage.setItem('score', score);
-    localStorage.setItem('level', level);
+    localStorage.setItem("score", score);
+    localStorage.setItem("level", level);
   }, [score, level]);
 
   const handleImageClick = () => {
-    console.log("Image clicked")
+    console.log("Image clicked");
     setScore((prevScore) => {
       const newScore = prevScore + 1;
       if (newScore >= 500) {
@@ -46,33 +50,28 @@ const App = () => {
         </HStack>
         <HStack justify="center" mt={4}>
           <Image borderRadius="full" boxSize="50px" src="/coin.png" alt="Coin" />
-          <Text fontSize="3xl" fontWeight="bold">{score}</Text>
+          <Text fontSize="3xl" fontWeight="bold">
+            {score}
+          </Text>
         </HStack>
         <Text align="center">Level {level}/10</Text>
-        <Progress colorScheme="teal" size="sm" value={(score / 500) * 100} />
+        <Progress colorScheme="brand.100" size="sm" value={(score / 500) * 100} />
         <Box align="center" mt={4}>
-          <TiltImage
-            imageSrc="brett-head-big.png"
-            altText="Brett Head"
-            tiltReverse="true"
-            tiltMaxAngleX={30}
-            tiltMaxAngleY={30}
-            onClick={handleImageClick}
-          />
+          <TiltImage imageSrc="brett-head-big.png" altText="Brett Head" tiltReverse="true" tiltMaxAngleX={30} tiltMaxAngleY={30} onClick={handleImageClick} />
         </Box>
         <HStack justify="space-between">
-          <HStack justify="center" mt={4}>
-            <Box align="center" mt={0}>
-              <Image borderRadius="full" boxSize="20px" src="/bolt.png" alt="Bolt" />
-            </Box>
-            <Text>10 / 10</Text>
-          </HStack>
-          <Button leftIcon={<FaRocket />} colorScheme="teal" size="sm">
-            Boost
+          <Button leftIcon={<FaRocket />} variant="solid" bg={"#00ADE0"} colorScheme="brand.100" size="sm" w={100} onClick={upgradeOnOpen}>
+            Upgrade
+          </Button>
+
+          <Button leftIcon={<FaDollarSign />} variant="solid" bg={"#00ADE0"} colorScheme="brand.100" size="sm" w={100} onClick={onOpen}>
+            Airdrop
           </Button>
         </HStack>
       </VStack>
       <Spacer />
+      <AirdropModal isOpen={isOpen} onClose={onClose} />
+      <UpgradeModal isOpen={upgradeIsOpen} onClose={upgradeOnClose} />
     </Box>
   );
 };
