@@ -5,6 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ChakraProvider } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react";
+import { Web3ModalProvider}  from './Web3ModalProvider';
 
 // 2. Call `extendTheme` and pass your custom values
 const theme = extendTheme({
@@ -27,9 +28,11 @@ const theme = extendTheme({
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <ChakraProvider theme={theme}>
-      <App />
-    </ChakraProvider>
+    <Web3ModalProvider>
+      <ChakraProvider theme={theme}>
+        <App />
+      </ChakraProvider>
+    </Web3ModalProvider>
   </React.StrictMode>
 );
 
