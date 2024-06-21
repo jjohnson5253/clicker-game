@@ -1,5 +1,6 @@
-import { Box, Button, Center, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, Text } from "@chakra-ui/react";
+import { Box, Center, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, Text } from "@chakra-ui/react";
 
+// eslint-disable-next-line
 export default function BagModal({ onClose, isOpen }) {
   return (
     <>

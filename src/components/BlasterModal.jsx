@@ -1,5 +1,6 @@
 import { Box, Button, Center, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, Text } from "@chakra-ui/react";
 
+// eslint-disable-next-line
 export default function BlasterModal({ onClose, isOpen }) {
   return (
     <>
