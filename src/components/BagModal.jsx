@@ -1,7 +1,18 @@
-import { Box, Center, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, Text } from "@chakra-ui/react";
+import { Box, Button, Center, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, Text } from "@chakra-ui/react";
+import { useSDK } from '@metamask/sdk-react';
 
 // eslint-disable-next-line
 export default function BagModal({ onClose, isOpen }) {
+  const { sdk, account/*, connected, connecting, provider, chainId, balance*/ } = useSDK();
+  const connect = async () => {
+    try {
+      console.log("trying to connect")
+      await sdk?.connect();
+    } catch (err) {
+      console.warn(`failed to connect..`, err);
+    }
+  };
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -25,10 +36,13 @@ export default function BagModal({ onClose, isOpen }) {
                 </Text>
               </Center>
             </Box>
+            <Text mt={4} fontSize="2xl">
+              {`Connected account: ${account}`}
+            </Text>
           </ModalBody>
-          <Box mx={"auto"} mb={40} h={14}>
-            <w3m-button  balance="show"/>
-          </Box>
+          <Button mx={"auto"} mb={20} h={14} w="90%" colorScheme="blue" bg={"#00ADE0"} onClick={connect}>
+            Connect Wallet
+          </Button>
         </ModalContent>
       </Modal>
     </>
