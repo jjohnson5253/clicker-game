@@ -2,6 +2,7 @@ import { Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, 
 import BlasterModal from "./BlasterModal";
 import BagModal from "./BagModal";
 
+// eslint-disable-next-line
 export default function UpgradeModal({ onClose, isOpen }) {
   const { isOpen: blasterIsOpen, onOpen: blasterOnOpen, onClose: blasterOnClose } = useDisclosure();
   const { isOpen: bagIsOpen, onOpen: bagOnOpen, onClose: bagOnClose } = useDisclosure();

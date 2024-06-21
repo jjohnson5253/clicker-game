@@ -1,5 +1,6 @@
-import { Box, Button, Center, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, Text } from "@chakra-ui/react";
+import { Box, Center, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, Text } from "@chakra-ui/react";
 
+// eslint-disable-next-line
 export default function BagModal({ onClose, isOpen }) {
   return (
     <>
@@ -25,9 +26,9 @@ export default function BagModal({ onClose, isOpen }) {
               </Center>
             </Box>
           </ModalBody>
-          <Button mx={"auto"} mb={10} h={14} w="90%" colorScheme="blue" bg={"#00ADE0"} onClick={() => console.log("purchase")}>
-            Connect Wallet
-          </Button>
+          <Box mx={"auto"} mb={40} h={14}>
+            <w3m-button  balance="show"/>
+          </Box>
         </ModalContent>
       </Modal>
     </>

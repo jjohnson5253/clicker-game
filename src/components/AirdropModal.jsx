@@ -1,5 +1,6 @@
 import { Button, Center, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react";
 
+// eslint-disable-next-line
 export default function AirdropModal({ onClose, isOpen }) {
   return (
     <>

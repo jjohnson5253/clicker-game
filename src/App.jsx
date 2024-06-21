@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Box, Text, useDisclosure, Button, Image, Progress, VStack, HStack, Spacer } from "@chakra-ui/react";
 import { FaRocket, FaDollarSign } from "react-icons/fa";
 import TiltImage from "./TiltImage";
@@ -16,9 +16,11 @@ const App = () => {
 
   window.scrollTo(0, 0);
 
-  const telegramApp = window.Telegram.WebApp;
-  console.log("Telegram App", telegramApp);
-  telegramApp.expand();
+  if(window.Telegram) {
+    const telegramApp = window.Telegram.WebApp;
+    console.log("Telegram App", telegramApp);
+    telegramApp.expand();
+  }
 
   useEffect(() => {
     localStorage.setItem("score", score);
@@ -57,7 +59,7 @@ const App = () => {
         <Text align="center">Level {level}/10</Text>
         <Progress colorScheme="brand.100" size="sm" value={(score / 500) * 100} />
         <Box align="center" mt={4}>
-          <TiltImage imageSrc="brett-head-big.png" altText="Brett Head" tiltReverse="true" tiltMaxAngleX={30} tiltMaxAngleY={30} onClick={handleImageClick} />
+          <TiltImage imageSrc="/brett-head-big.png" altText="Brett Head" tiltReverse="true" tiltMaxAngleX={30} tiltMaxAngleY={30} onClick={handleImageClick} />
         </Box>
         <HStack justify="space-between">
           <Button leftIcon={<FaRocket />} variant="solid" bg={"#00ADE0"} colorScheme="brand.100" size="sm" w={100} onClick={upgradeOnOpen}>

@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Tilt from 'react-parallax-tilt';
 import { Image, Text } from '@chakra-ui/react';
 import { motion, useAnimation } from 'framer-motion';
 import {useHapticFeedback} from "@vkruglikov/react-telegram-web-app";
 
+// eslint-disable-next-line
 const TiltImage = ({ imageSrc, altText, onClick, ...tiltProps }) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [clickPosition, setClickPosition] = useState({ x: 0, y: 0 });
