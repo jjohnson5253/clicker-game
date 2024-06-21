@@ -4,7 +4,7 @@ import App from './App.jsx'
 import './index.css'
 import { ChakraProvider } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react";
-import { Web3ModalProvider}  from './Web3ModalProvider';
+import { MetaMaskProvider } from '@metamask/sdk-react';
 
 // 2. Call `extendTheme` and pass your custom values
 const theme = extendTheme({
@@ -26,10 +26,21 @@ const theme = extendTheme({
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Web3ModalProvider>
-      <ChakraProvider theme={theme}>
+    <MetaMaskProvider debug={false} sdkOptions={{
+      logging:{
+          developerMode: false,
+        },
+        checkInstallationImmediately: false, // This will automatically connect to MetaMask on page load
+        i18nOptions: {
+          enabled: true,
+        },
+        dappMetadata: {
+          name: "Clicker Game",
+          url: window.location.protocol + '//' + window.location.host,
+        }
+    }}>      <ChakraProvider theme={theme}>
         <App />
       </ChakraProvider>
-    </Web3ModalProvider>
+    </MetaMaskProvider>
   </React.StrictMode>
 )
