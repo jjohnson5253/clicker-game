@@ -4,8 +4,11 @@ import { FaRocket, FaDollarSign } from "react-icons/fa";
 import TiltImage from "./TiltImage";
 import AirdropModal from "./components/AirdropModal";
 import UpgradeModal from "./components/UpgradeModal";
+import { useTelegram } from "./hooks/useTelegram";
+import { supabase } from "../utils/supabase";
 
 const App = () => {
+  const { user } = useTelegram();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: upgradeIsOpen, onOpen: upgradeOnOpen, onClose: upgradeOnClose } = useDisclosure();
   const getInitialScore = () => Number(localStorage.getItem("score")) || 0;
@@ -16,16 +19,32 @@ const App = () => {
 
   window.scrollTo(0, 0);
 
-  if(window.Telegram) {
+  if (window.Telegram) {
     const telegramApp = window.Telegram.WebApp;
     console.log("Telegram App", telegramApp);
     telegramApp.expand();
+    telegramApp.initDataUnsafe.user;
   }
+
+  useEffect(() => {
+    if (user) {
+      getUser(user.id.toString());
+    }
+  }, [user]);
 
   useEffect(() => {
     localStorage.setItem("score", score);
     localStorage.setItem("level", level);
   }, [score, level]);
+
+  const getUser = async (id) => {
+    const { data, error } = await supabase.from("clicker_users").select("*").eq("telegram_id", id);
+    if (error) {
+      console.error("Error getting user", error);
+    } else {
+      console.log("User", data);
+    }
+  };
 
   const handleImageClick = () => {
     console.log("Image clicked");
