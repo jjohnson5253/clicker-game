@@ -3,7 +3,13 @@ import { createContext, useEffect, useMemo, useState } from "react";
 
 export const TelegramContext = createContext({});
 
-export const TelegramProvider = (children) => {
+import PropTypes from "prop-types";
+
+export const TelegramProvider = ({ children }) => {
+  TelegramProvider.propTypes = {
+    children: PropTypes.node.isRequired,
+  };
+
   const [webApp, setWebApp] = useState(null);
 
   useEffect(() => {

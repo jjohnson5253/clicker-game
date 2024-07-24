@@ -6,16 +6,15 @@ import AirdropModal from "./components/AirdropModal";
 import UpgradeModal from "./components/UpgradeModal";
 import { useTelegram } from "./hooks/useTelegram";
 import { supabase } from "../utils/supabase";
+const isProduction = process.env.NODE_ENV === "production";
 
 const App = () => {
-  const { user } = useTelegram();
+  const { telegramUser } = useTelegram();
+  const [ userId, setUserId ] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: upgradeIsOpen, onOpen: upgradeOnOpen, onClose: upgradeOnClose } = useDisclosure();
-  const getInitialScore = () => Number(localStorage.getItem("score")) || 0;
-  const getInitialLevel = () => Number(localStorage.getItem("level")) || 1;
 
-  const [score, setScore] = useState(getInitialScore);
-  const [level, setLevel] = useState(getInitialLevel);
+  const [score, setScore] = useState(null);
 
   window.scrollTo(0, 0);
 
@@ -27,56 +26,71 @@ const App = () => {
   }
 
   useEffect(() => {
-    if (user) {
-      getUser(user.id.toString());
+    if (telegramUser) {
+      getUser(telegramUser.id.toString());
+    } else if (!isProduction) {
+      console.log("Development mode");
+      const testTelegramId = "69420";
+      getUser(testTelegramId);
     }
-  }, [user]);
+  }, [telegramUser]);
 
   useEffect(() => {
-    localStorage.setItem("score", score);
-    localStorage.setItem("level", level);
-  }, [score, level]);
+    if (userId && score) {
+      const updateSupabase = async () => {
+        const { error } = await supabase
+          .from('clicker_users')
+          .update({ score: score })
+          .eq('telegram_id', userId);
+        if(error) {
+          console.error("Error updating user", error);
+        }
+      };
+      updateSupabase();
+    }
+  }, [score]);
 
   const getUser = async (id) => {
+    setUserId(id);
     const { data, error } = await supabase.from("clicker_users").select("*").eq("telegram_id", id);
     if (error) {
       console.error("Error getting user", error);
+    } else if (data.length == 0) {
+      console.log("User not found. Creating new user...");
+      const { error } = await supabase
+        .from('clicker_users')
+        .insert(
+          {
+            telegram_id: id,
+            score: 0,
+            connected_wallet: null,
+            passive_points_per_hour: 0,
+          },
+        )
+        .select()
+      if(error) {
+        console.error("Error creating new user", error);
+      }
     } else {
-      console.log("User", data);
+      console.log("User found: ", data);
+      setScore(data[0].score);
     }
   };
 
-  const handleImageClick = () => {
+  const handleImageClick = async () => {
     console.log("Image clicked");
-    setScore((prevScore) => {
-      const newScore = prevScore + 1;
-      if (newScore >= 500) {
-        setLevel((prevLevel) => Math.min(prevLevel + 1, 10));
-        return 0;
-      }
-      return newScore;
-    });
+    setScore(score + 1);
   };
 
   return (
     <Box bg="gray.800" color="white" minH="100vh" p={4}>
       <VStack spacing={4} mt={6} align="stretch">
-        <HStack justify="space-between">
-          <Text>Earn per tap</Text>
-          <Text>Coins to level up</Text>
-        </HStack>
-        <HStack justify="space-between">
-          <Text>+1</Text>
-          <Text>500</Text>
-        </HStack>
         <HStack justify="center" mt={4}>
           <Image borderRadius="full" boxSize="50px" src="/coin.png" alt="Coin" />
           <Text fontSize="3xl" fontWeight="bold">
             {score}
           </Text>
         </HStack>
-        <Text align="center">Level {level}/10</Text>
-        <Progress colorScheme="brand.100" size="sm" value={(score / 500) * 100} />
         <Box align="center" mt={4}>
           <TiltImage imageSrc="/brett-head-big.png" altText="Brett Head" tiltReverse="true" tiltMaxAngleX={30} tiltMaxAngleY={30} onClick={handleImageClick} />
         </Box>
