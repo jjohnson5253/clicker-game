@@ -5,7 +5,7 @@ import TiltImage from "./TiltImage";
 import AirdropModal from "./components/AirdropModal";
 import UpgradeModal from "./components/UpgradeModal";
 import { useTelegram } from "./hooks/useTelegram";
-import { supabase } from "../utils/supabase";
+import { supabase } from "./utils/supabase";
 const isProduction = process.env.NODE_ENV === "production";
 
 const App = () => {
