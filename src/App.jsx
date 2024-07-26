@@ -20,12 +20,9 @@ const App = () => {
 
   window.scrollTo(0, 0);
 
-
-
   useEffect(() => {
     if (window.Telegram) {
       setTelegramUser(window.Telegram.WebApp.initDataUnsafe.user); // temp fix until we fix the provider
-  
       const telegramApp = window.Telegram.WebApp;
       console.log("Telegram App", telegramApp);
       telegramApp.expand();
