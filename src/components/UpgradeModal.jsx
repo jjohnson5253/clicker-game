@@ -1,16 +1,34 @@
-import { useState } from "react";
-import { Image, Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, useDisclosure } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import { Image, Box, SimpleGrid, Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, useDisclosure } from "@chakra-ui/react";
 import BlasterModal from "./BlasterModal";
 import BagModal from "./BagModal";
+import PurchaseModal from "./PurchaseModal";
 import { supabase } from "../utils/supabase";
 
 // eslint-disable-next-line
 export default function UpgradeModal({ onClose, isOpen }) {
   const { isOpen: blasterIsOpen, onOpen: blasterOnOpen, onClose: blasterOnClose } = useDisclosure();
   const { isOpen: bagIsOpen, onOpen: bagOnOpen, onClose: bagOnClose } = useDisclosure();
-  //const [upgradesToDisplay, setUpgradesToDisplay] = useState([]);
+  const { isOpen: purchaseIsOpen, onOpen: purchaseOnOpen, onClose: purchaseOnClose } = useDisclosure();
+  const [upgradesToDisplay, setUpgradesToDisplay] = useState([]);
+  const [selectedUpgrade, setSelectedUpgrade] = useState({});
+  const [isLoadingUpgradesToDisplay, setIsLoadingUpgradesToDisplay] = useState(false);
+  const [purchaseMade, setPurchaseMade] = useState(true);
+  const [telegramUserId, setTelegramUserId] = useState("69420");
 
-  async function getNextUpgrades(telegramUserId) {
+  useEffect(() => {
+    if( purchaseMade ) {
+      setIsLoadingUpgradesToDisplay(true);
+      getNextUpgrades(telegramUserId).then((nextUpgrades) => {
+        console.log("nextUpgrades: ", nextUpgrades);
+        setUpgradesToDisplay(nextUpgrades);
+        setIsLoadingUpgradesToDisplay(false);
+        setPurchaseMade(false);
+      });
+    }
+  }, [telegramUserId, purchaseMade]);
+
+  const getNextUpgrades = async (telegramUserId) => {
     // Get the user's current upgrades
     telegramUserId = "69420";
     console.log("telegramUserId: ", telegramUserId);
@@ -18,20 +36,11 @@ export default function UpgradeModal({ onClose, isOpen }) {
       .from("user_upgrades")
       .select("upgrade_id")
       .eq("user_telegram_id", telegramUserId);
-    // const { data: userUpgrades, error } = await supabase
-    //   .from("user_upgrades")
-    //   .select("*")
-
-    // const { data } = await supabase.from("user_upgrades").select("*");
-    // console.log("data: ", data);
-    console.log("userUpgrades: ", userUpgrades);
   
     // Get all upgrades
     const { data: allUpgrades } = await supabase
       .from('upgrades')
       .select('name, level, cost, points_per_hour, id');
-
-    console.log("allupgrades: ", allUpgrades);
   
     // Group upgrades by name
     const upgradesByName = {};
@@ -47,12 +56,10 @@ export default function UpgradeModal({ onClose, isOpen }) {
     Object.keys(upgradesByName).forEach((name) => {
       const userUpgradeLevel = userUpgrades.find((userUpgrade) => {
         const upgrade = allUpgrades.find((u) => u.id === userUpgrade.upgrade_id && u.name === name);
-        console.log("found user upgrade");
         return upgrade;
       })?.upgrade_id;
   
       if (userUpgradeLevel) {
-        console.log("here")
         const currentUpgrade = allUpgrades.find((u) => u.id === userUpgradeLevel);
         const nextUpgrade = upgradesByName[name].find((u) => u.level === currentUpgrade.level + 1);
         nextUpgrades[name] = nextUpgrade;
@@ -60,33 +67,43 @@ export default function UpgradeModal({ onClose, isOpen }) {
         nextUpgrades[name] = upgradesByName[name][0];
       }
     });
-    console.log("nextUpgrades: ", nextUpgrades);
     return nextUpgrades;
   }
-  
-  // Example usage:
-  const hardCodedUserId = "69420";
-  getNextUpgrades(hardCodedUserId).then((nextUpgrades) => {
-    console.log(nextUpgrades);
-  });
 
   return (
     <>
       <BlasterModal isOpen={blasterIsOpen} onClose={blasterOnClose} />
       <BagModal isOpen={bagIsOpen} onClose={bagOnClose} />
+      <PurchaseModal isOpen={purchaseIsOpen} onClose={purchaseOnClose} selectedUpgrade={selectedUpgrade} setPurchaseMade={setPurchaseMade}/>
       <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent bg={"#586888"} m={2} h={"100vh"} textAlign={"center"}>
-          <ModalCloseButton />
-          <ModalBody color={"white"} mt={24}>
-            <Image src="/finger_blaster.png" alt="Finger Blaster" onClick={blasterOnOpen} />
-            <Image src="/bag_holder.png" alt="Bag Holder" mt={2} onClick={bagOnOpen} />
-            <Button mt={2} onClick={getNextUpgrades}>
-              Get Next Upgrades
-            </Button>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+      <ModalOverlay />
+      <ModalContent bg={"#586888"} m={2} h={"100vh"} textAlign={"center"}>
+        <ModalCloseButton />
+        <ModalBody color={"white"} mt={24}>
+          <Box overflowY={"scroll"} h={"80vh"}>
+            <SimpleGrid columns={2} spacing={4}>
+              {!isLoadingUpgradesToDisplay && upgradesToDisplay && Object.keys(upgradesToDisplay).map((name, index) => (
+                <Box key={index} p={4} border={"1px solid"} borderColor={"gray.200"} borderRadius={"md"} onClick={() => {
+                  setSelectedUpgrade({
+                    name,
+                    level: upgradesToDisplay[name].level,
+                    cost: upgradesToDisplay[name].cost,
+                    pointsPerHour: upgradesToDisplay[name].points_per_hour,
+                  });
+                  purchaseOnOpen();
+                }}>
+                  <Image src="/bag.png" w="20"/>
+                  <h2>{name}</h2>
+                  <p>Level: {upgradesToDisplay[name].level}</p>
+                  <p>Points per hour: {upgradesToDisplay[name].points_per_hour}</p>
+                  <p>Cost: {upgradesToDisplay[name].cost}</p>
+                </Box>
+              ))}
+            </SimpleGrid>
+          </Box>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
     </>
   );
 }
