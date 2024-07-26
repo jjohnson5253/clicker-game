@@ -2,10 +2,16 @@ import { Box, Button, Center, Image, Modal, ModalBody, ModalCloseButton, ModalCo
 import { supabase } from "../utils/supabase";
 
 // eslint-disable-next-line
-export default function PurchaseModal({ onClose, isOpen, selectedUpgrade, setPurchaseMade }) {
+export default function PurchaseModal({ onClose, isOpen, selectedUpgrade, setPurchaseMade, score, setScore }) {
 
   const handlePurchase = async () => {
+    // subtract the cost of the upgrade from the user's score
+    setScore(score - selectedUpgrade.cost);
+
+    // harecoded user id for now
     const userId = "69420";
+
+    // Get the upgrade id
     const { data } = await supabase
     .from('upgrades')
     .select('id')
@@ -15,7 +21,6 @@ export default function PurchaseModal({ onClose, isOpen, selectedUpgrade, setPur
   
     if (data) {
       const upgradeId = data.id;
-    
       // Add the new upgrade to user_upgrades
       await supabase
         .from('user_upgrades')
@@ -40,10 +45,24 @@ export default function PurchaseModal({ onClose, isOpen, selectedUpgrade, setPur
           .eq('user_telegram_id', userId)
           .eq('upgrade_id', previousUpgradeId);
       }
-      setPurchaseMade(true);
-      onClose();
     }
+
+    // update passive points for user
+    const passivePointsData = await supabase
+      .from('clicker_users')
+      .select('passive_points_per_hour')
+      .eq('telegram_id', userId)
+      .single();
+    const newPassivePoints =  passivePointsData.data.passive_points_per_hour + selectedUpgrade.pointsPerHour;
+    await supabase
+      .from('clicker_users')
+      .update({ passive_points_per_hour: newPassivePoints })
+      .eq('telegram_id', userId);
+
+    setPurchaseMade(true);
+    onClose();
   }
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -52,7 +71,7 @@ export default function PurchaseModal({ onClose, isOpen, selectedUpgrade, setPur
           <ModalCloseButton />
           <ModalBody color={"white"} mt={12}>
             <Center>
-              <Image src="/finger.png" w={24} />{" "}
+              <Image src="/flag.png" w={24} />{" "}
             </Center>
             <Text mt={4} fontSize="2xl">
               {selectedUpgrade.name}

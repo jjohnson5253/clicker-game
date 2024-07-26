@@ -35,6 +35,7 @@ const App = () => {
     }
   }, [telegramUser]);
 
+  // update score on supabase
   useEffect(() => {
     if (userId && score) {
       const updateSupabase = async () => {
@@ -50,12 +51,14 @@ const App = () => {
     }
   }, [score]);
 
+  // get user from supabase
   const getUser = async (id) => {
     setUserId(id);
     const { data, error } = await supabase.from("clicker_users").select("*").eq("telegram_id", id);
     if (error) {
       console.error("Error getting user", error);
     } else if (data.length == 0) {
+      // create new user if not in database
       console.log("User not found. Creating new user...");
       const { error } = await supabase
         .from('clicker_users')
@@ -92,21 +95,17 @@ const App = () => {
           </Text>
         </HStack>
         <Box align="center" mt={4}>
-          <TiltImage imageSrc="/brett-head-big.png" altText="Brett Head" tiltReverse="true" tiltMaxAngleX={30} tiltMaxAngleY={30} onClick={handleImageClick} />
+          <TiltImage imageSrc="/flag.png" altText="Brett Head" tiltReverse="true" tiltMaxAngleX={30} tiltMaxAngleY={30} onClick={handleImageClick} />
         </Box>
         <HStack justify="space-between">
           <Button leftIcon={<FaRocket />} variant="solid" bg={"#00ADE0"} colorScheme="brand.100" size="sm" w={100} onClick={upgradeOnOpen}>
             Upgrade
           </Button>
-
-          <Button leftIcon={<FaDollarSign />} variant="solid" bg={"#00ADE0"} colorScheme="brand.100" size="sm" w={100} onClick={onOpen}>
-            Airdrop
-          </Button>
         </HStack>
       </VStack>
       <Spacer />
       <AirdropModal isOpen={isOpen} onClose={onClose} />
-      <UpgradeModal isOpen={upgradeIsOpen} onClose={upgradeOnClose} />
+      <UpgradeModal isOpen={upgradeIsOpen} onClose={upgradeOnClose} score={score} setScore={setScore}/>
     </Box>
   );
 };

@@ -6,7 +6,7 @@ import PurchaseModal from "./PurchaseModal";
 import { supabase } from "../utils/supabase";
 
 // eslint-disable-next-line
-export default function UpgradeModal({ onClose, isOpen }) {
+export default function UpgradeModal({ onClose, isOpen, score, setScore }) {
   const { isOpen: blasterIsOpen, onOpen: blasterOnOpen, onClose: blasterOnClose } = useDisclosure();
   const { isOpen: bagIsOpen, onOpen: bagOnOpen, onClose: bagOnClose } = useDisclosure();
   const { isOpen: purchaseIsOpen, onOpen: purchaseOnOpen, onClose: purchaseOnClose } = useDisclosure();
@@ -74,7 +74,7 @@ export default function UpgradeModal({ onClose, isOpen }) {
     <>
       <BlasterModal isOpen={blasterIsOpen} onClose={blasterOnClose} />
       <BagModal isOpen={bagIsOpen} onClose={bagOnClose} />
-      <PurchaseModal isOpen={purchaseIsOpen} onClose={purchaseOnClose} selectedUpgrade={selectedUpgrade} setPurchaseMade={setPurchaseMade}/>
+      <PurchaseModal isOpen={purchaseIsOpen} onClose={purchaseOnClose} selectedUpgrade={selectedUpgrade} setPurchaseMade={setPurchaseMade} score={score} setScore={setScore}/>
       <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent bg={"#586888"} m={2} h={"100vh"} textAlign={"center"}>
@@ -92,7 +92,7 @@ export default function UpgradeModal({ onClose, isOpen }) {
                   });
                   purchaseOnOpen();
                 }}>
-                  <Image src="/bag.png" w="20"/>
+                  <Image src="/flag.png" w="20" mx="auto"/>
                   <h2>{name}</h2>
                   <p>Level: {upgradesToDisplay[name].level}</p>
                   <p>Points per hour: {upgradesToDisplay[name].points_per_hour}</p>
