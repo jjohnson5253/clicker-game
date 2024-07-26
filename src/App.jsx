@@ -26,7 +26,10 @@ const App = () => {
   }
 
   useEffect(() => {
+    console.log("Telegram user 1: ", telegramUser);
     if (telegramUser) {
+      console.log("Telegram user 2: ", telegramUser);
+      console.log("Telegram user id: ", telegramUser.id.toString());
       getUser(telegramUser.id.toString());
     } else if (!isProduction) {
       console.log("Development mode");
