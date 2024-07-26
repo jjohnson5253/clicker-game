@@ -80,15 +80,26 @@ export default function UpgradeModal({ onClose, isOpen, score, setScore, userId}
           <Box overflowY={"scroll"} h={"80vh"}>
             <SimpleGrid columns={2} spacing={4}>
               {!isLoadingUpgradesToDisplay && upgradesToDisplay && Object.keys(upgradesToDisplay).map((name, index) => (
-                <Box key={index} p={4} border={"1px solid"} borderColor={"gray.200"} borderRadius={"md"} onClick={() => {
-                  setSelectedUpgrade({
-                    name,
-                    level: upgradesToDisplay[name].level,
-                    cost: upgradesToDisplay[name].cost,
-                    pointsPerHour: upgradesToDisplay[name].points_per_hour,
-                  });
-                  purchaseOnOpen();
-                }}>
+                <Box 
+                  key={index}
+                  p={4}
+                  border={"1px solid"}
+                  borderColor={"gray.200"}
+                  borderRadius={"md"}
+                  opacity={upgradesToDisplay[name].cost > score ? 0.5 : 1}
+                  onClick={() => {
+                    if (score < upgradesToDisplay[name].cost) {
+                      return;
+                    }
+                    setSelectedUpgrade({
+                      name,
+                      level: upgradesToDisplay[name].level,
+                      cost: upgradesToDisplay[name].cost,
+                      pointsPerHour: upgradesToDisplay[name].points_per_hour,
+                    });
+                    purchaseOnOpen();
+                  }}
+                >
                   <Image src="/flag.png" w="20" mx="auto"/>
                   <h2>{name}</h2>
                   <p>Level: {upgradesToDisplay[name].level}</p>
