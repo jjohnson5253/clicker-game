@@ -2,14 +2,11 @@ import { Box, Button, Center, Image, Modal, ModalBody, ModalCloseButton, ModalCo
 import { supabase } from "../utils/supabase";
 
 // eslint-disable-next-line
-export default function PurchaseModal({ onClose, isOpen, selectedUpgrade, setPurchaseMade, score, setScore }) {
+export default function PurchaseModal({ onClose, isOpen, selectedUpgrade, setPurchaseMade, score, setScore, userId }) {
 
   const handlePurchase = async () => {
     // subtract the cost of the upgrade from the user's score
     setScore(score - selectedUpgrade.cost);
-
-    // harecoded user id for now
-    const userId = "69420";
 
     // Get the upgrade id
     const { data } = await supabase

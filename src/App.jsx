@@ -6,7 +6,7 @@ import AirdropModal from "./components/AirdropModal";
 import UpgradeModal from "./components/UpgradeModal";
 import { useTelegram } from "./hooks/useTelegram";
 import { supabase } from "./utils/supabase";
-const isProduction = process.env.NODE_ENV === "production";
+const isProduction = import.meta.env.VITE_NODE_ENV === "production";
 
 const App = () => {
   const { telegramUser } = useTelegram();
@@ -105,7 +105,7 @@ const App = () => {
       </VStack>
       <Spacer />
       <AirdropModal isOpen={isOpen} onClose={onClose} />
-      <UpgradeModal isOpen={upgradeIsOpen} onClose={upgradeOnClose} score={score} setScore={setScore}/>
+      <UpgradeModal isOpen={upgradeIsOpen} onClose={upgradeOnClose} score={score} setScore={setScore} userId={userId}/>
     </Box>
   );
 };

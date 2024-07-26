@@ -6,7 +6,7 @@ import PurchaseModal from "./PurchaseModal";
 import { supabase } from "../utils/supabase";
 
 // eslint-disable-next-line
-export default function UpgradeModal({ onClose, isOpen, score, setScore }) {
+export default function UpgradeModal({ onClose, isOpen, score, setScore, userId}) {
   const { isOpen: blasterIsOpen, onOpen: blasterOnOpen, onClose: blasterOnClose } = useDisclosure();
   const { isOpen: bagIsOpen, onOpen: bagOnOpen, onClose: bagOnClose } = useDisclosure();
   const { isOpen: purchaseIsOpen, onOpen: purchaseOnOpen, onClose: purchaseOnClose } = useDisclosure();
@@ -14,24 +14,21 @@ export default function UpgradeModal({ onClose, isOpen, score, setScore }) {
   const [selectedUpgrade, setSelectedUpgrade] = useState({});
   const [isLoadingUpgradesToDisplay, setIsLoadingUpgradesToDisplay] = useState(false);
   const [purchaseMade, setPurchaseMade] = useState(true);
-  const [telegramUserId, setTelegramUserId] = useState("69420");
 
   useEffect(() => {
     if( purchaseMade ) {
       setIsLoadingUpgradesToDisplay(true);
-      getNextUpgrades(telegramUserId).then((nextUpgrades) => {
+      getNextUpgrades(userId).then((nextUpgrades) => {
         console.log("nextUpgrades: ", nextUpgrades);
         setUpgradesToDisplay(nextUpgrades);
         setIsLoadingUpgradesToDisplay(false);
         setPurchaseMade(false);
       });
     }
-  }, [telegramUserId, purchaseMade]);
+  }, [userId, purchaseMade]);
 
   const getNextUpgrades = async (telegramUserId) => {
     // Get the user's current upgrades
-    telegramUserId = "69420";
-    console.log("telegramUserId: ", telegramUserId);
     const { data: userUpgrades } = await supabase
       .from("user_upgrades")
       .select("upgrade_id")
@@ -74,7 +71,7 @@ export default function UpgradeModal({ onClose, isOpen, score, setScore }) {
     <>
       <BlasterModal isOpen={blasterIsOpen} onClose={blasterOnClose} />
       <BagModal isOpen={bagIsOpen} onClose={bagOnClose} />
-      <PurchaseModal isOpen={purchaseIsOpen} onClose={purchaseOnClose} selectedUpgrade={selectedUpgrade} setPurchaseMade={setPurchaseMade} score={score} setScore={setScore}/>
+      <PurchaseModal isOpen={purchaseIsOpen} onClose={purchaseOnClose} selectedUpgrade={selectedUpgrade} setPurchaseMade={setPurchaseMade} score={score} setScore={setScore} userId={userId}/>
       <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent bg={"#586888"} m={2} h={"100vh"} textAlign={"center"}>
