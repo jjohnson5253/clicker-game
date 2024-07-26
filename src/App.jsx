@@ -9,7 +9,9 @@ import { supabase } from "./utils/supabase";
 const isProduction = import.meta.env.VITE_NODE_ENV === "production";
 
 const App = () => {
-  const { telegramUser } = useTelegram();
+  // todo: fix telegram provider
+  //const { telegramUser } = useTelegram();
+  const [ telegramUser, setTelegramUser ] = useState(null);
   const [ userId, setUserId ] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: upgradeIsOpen, onOpen: upgradeOnOpen, onClose: upgradeOnClose } = useDisclosure();
@@ -19,6 +21,8 @@ const App = () => {
   window.scrollTo(0, 0);
 
   if (window.Telegram) {
+    setTelegramUser(window.Telegram.WebApp.initDataUnsafe.user); // temp fix until we fix the provider
+
     const telegramApp = window.Telegram.WebApp;
     console.log("Telegram App", telegramApp);
     telegramApp.expand();
