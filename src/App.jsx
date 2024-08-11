@@ -17,6 +17,8 @@ const App = () => {
   const { isOpen: upgradeIsOpen, onOpen: upgradeOnOpen, onClose: upgradeOnClose } = useDisclosure();
 
   const [score, setScore] = useState(null);
+  const [totalScore, setTotalScore] = useState(null);
+  const [energy, setEnergy] = useState(null);
 
   window.scrollTo(0, 0);
 
@@ -40,18 +42,33 @@ const App = () => {
     }
   }, [telegramUser]);
 
+  // increase energy
+  useEffect(() => {
+    if (energy < 1000){
+      const interval = setInterval(() => {
+        setEnergy(energy => energy + 1);
+      }, 2000);
+      return () => clearInterval(interval);
+    }
+  }, []);
+
   // update score on supabase
   useEffect(() => {
     if (userId && score) {
+      let updateData = { 
+        score: score,
+        total_score: totalScore,
+        energy: energy
+      };
       const updateSupabase = async () => {
         const { error } = await supabase
           .from('clicker_users')
-          .update({ score: score })
+          .update(updateData)
           .eq('telegram_id', userId);
         if(error) {
           console.error("Error updating user", error);
         }
-      };
+      }
       updateSupabase();
     }
   }, [score]);
@@ -73,6 +90,8 @@ const App = () => {
             score: 0,
             connected_wallet: null,
             passive_points_per_hour: 0,
+            total_score: 0,
+            energy: 0,
           },
         )
         .select()
@@ -82,12 +101,17 @@ const App = () => {
     } else {
       console.log("User found: ", data);
       setScore(data[0].score);
+      setTotalScore(data[0].total_score);
     }
   };
 
   const handleImageClick = async () => {
     console.log("Image clicked");
-    setScore(score + 1);
+    if(energy > 0) {
+      setScore(score + 1);
+      setTotalScore(totalScore + 1);
+      setEnergy(energy - 1);
+    }
   };
 
   return (
@@ -100,9 +124,12 @@ const App = () => {
           </Text>
         </HStack>
         <Box align="center" mt={4}>
-          <TiltImage imageSrc="/flag.png" altText="Brett Head" tiltReverse="true" tiltMaxAngleX={30} tiltMaxAngleY={30} onClick={handleImageClick} />
+          <TiltImage imageSrc="/flag.png" altText="Brett Head" tiltReverse="true" tiltMaxAngleX={30} tiltMaxAngleY={30} onClick={handleImageClick} energy={energy} />
         </Box>
         <HStack justify="space-between">
+          <Text fontSize="xl" fontWeight="bold">
+            energy {energy} / 1000
+          </Text>
           <Button leftIcon={<FaRocket />} variant="solid" bg={"#00ADE0"} colorScheme="brand.100" size="sm" w={100} onClick={upgradeOnOpen}>
             Upgrade
           </Button>
