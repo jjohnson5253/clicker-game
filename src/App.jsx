@@ -20,6 +20,7 @@ const App = () => {
   const [totalScore, setTotalScore] = useState(null); // this is the all time points earned, not just points after spending
   const [energy, setEnergy] = useState(null);
   const [passivePointsPerHour, setPassivePointsPerHour] = useState(null);
+  const [party, setParty] = useState(null);
   const maxEnergy = 250;
   const energyInterval = 2000;
 
@@ -74,6 +75,7 @@ const App = () => {
         total_score: totalScore,
         energy: energy,
         updated_at: timestamp,
+        party: party,
       };
       const updateSupabase = async () => {
         const { error } = await supabase
@@ -86,7 +88,7 @@ const App = () => {
       }
       updateSupabase();
     }
-  }, [score, energy]);
+  }, [score, energy, party]);
 
   // get user from supabase
   const getUser = async (id) => {
@@ -115,7 +117,7 @@ const App = () => {
       }
     } else {
       console.log("User found: ", data);
-      
+      setParty(data[0].party);
       calculateScore(data[0].score, data[0].total_score, data[0].passive_points_per_hour, data[0].updated_at);
       calculateEnergy(data[0].energy, data[0].updated_at);
     }
@@ -152,6 +154,10 @@ const App = () => {
     setPassivePointsPerHour(pointsPerHour);
   }
 
+  const handlePartySelect = async (party) => {
+    setParty(party);
+  }
+
   const handleImageClick = async () => {
     console.log("Image clicked");
     if(energy > 0) {
@@ -185,6 +191,20 @@ const App = () => {
             Upgrade
           </Button>
         </HStack>
+        <HStack justify="space-between">
+        <Button
+          variant={party === 'republican' ? 'solid' : 'outline'}
+          onClick={() => handlePartySelect('republican')}
+        >
+          Republican
+        </Button>
+        <Button
+          variant={party === 'democrat' ? 'solid' : 'outline'}
+          onClick={() => handlePartySelect('democrat')}
+        >
+          Democrat
+        </Button>
+      </HStack>
       </VStack>
       <Spacer />
       <AirdropModal isOpen={isOpen} onClose={onClose} />
