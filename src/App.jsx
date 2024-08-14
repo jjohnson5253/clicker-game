@@ -17,9 +17,10 @@ const App = () => {
   const { isOpen: upgradeIsOpen, onOpen: upgradeOnOpen, onClose: upgradeOnClose } = useDisclosure();
 
   const [score, setScore] = useState(null);
-  const [totalScore, setTotalScore] = useState(null);
+  const [totalScore, setTotalScore] = useState(null); // this is the all time points earned, not just points after spending
   const [energy, setEnergy] = useState(null);
-  const maxEnergy = 1000;
+  const [passivePointsPerHour, setPassivePointsPerHour] = useState(null);
+  const maxEnergy = 250;
   const energyInterval = 2000;
 
   window.scrollTo(0, 0);
@@ -53,6 +54,18 @@ const App = () => {
       return () => clearInterval(interval);
     }
   }, []);
+
+  useEffect(() => {
+    if (passivePointsPerHour > 0) {
+      console.log("passivePointsPerHourr: ", passivePointsPerHour);
+      console.log("intervanl: ", (60 * 60 * 1000) / passivePointsPerHour);
+      const interval = setInterval(() => {
+        setTotalScore((prevTotalScore) => prevTotalScore + 1);
+        setScore((prevScore) => prevScore + 1);
+      }, (60 * 60 * 1000) / passivePointsPerHour); // Convert pointsPerHour to milliseconds
+      return () => clearInterval(interval);
+    }
+  }, [passivePointsPerHour]);
 
   // update score on supabase
   useEffect(() => {
@@ -104,9 +117,8 @@ const App = () => {
       }
     } else {
       console.log("User found: ", data);
-      setScore(data[0].score);
-      setTotalScore(data[0].total_score);
-      //setEnergy(data[0].energy);
+      
+      calculateScore(data[0].score, data[0].total_score, data[0].passive_points_per_hour, data[0].updated_at);
       calculateEnergy(data[0].energy, data[0].updated_at);
     }
   };
@@ -124,11 +136,29 @@ const App = () => {
     }
   }
 
+  const calculateScore = (initialPoints, initialTotalPoints, pointsPerHour, last_updated_at) =>{
+    const lastUpdated = new Date(last_updated_at);
+    const currentTime = new Date();
+    const timeDifference = currentTime - lastUpdated;
+    const timeDifferenceHours = timeDifference / (1000 * 60 * 60);
+    let pointsToGive = Math.floor(timeDifferenceHours * pointsPerHour);
+
+     // only give points for 3 hours
+    const maxPointsToGive = pointsPerHour * 3;
+    if(pointsToGive > maxPointsToGive) {
+      pointsToGive = maxPointsToGive;
+    }
+
+    setScore(initialPoints + pointsToGive);
+    setTotalScore(initialTotalPoints + pointsToGive);
+    setPassivePointsPerHour(pointsPerHour);
+  }
+
   const handleImageClick = async () => {
     console.log("Image clicked");
     if(energy > 0) {
-      setScore(score + 1);
       setTotalScore(totalScore + 1);
+      setScore(score + 1);
       setEnergy(energy - 1);
     }
   };
@@ -136,20 +166,24 @@ const App = () => {
   return (
     <Box bg="gray.800" color="white" minH="100vh" p={4}>
       <VStack spacing={4} mt={6} align="stretch">
+        <HStack justify="space-between">
+          <Text fontSize="xl" fontWeight="bold">
+            Points Per Hour: {passivePointsPerHour}
+          </Text>
+        </HStack>
         <HStack justify="center" mt={4}>
-          <Image borderRadius="full" boxSize="50px" src="/coin.png" alt="Coin" />
           <Text fontSize="3xl" fontWeight="bold">
             {score}
           </Text>
         </HStack>
         <Box align="center" mt={4}>
-          <TiltImage imageSrc="/flag.png" altText="Brett Head" tiltReverse="true" tiltMaxAngleX={30} tiltMaxAngleY={30} onClick={handleImageClick} energy={energy} />
+          <TiltImage imageSrc="/flag.png" altText="Flerg" tiltReverse="true" tiltMaxAngleX={30} tiltMaxAngleY={30} onClick={handleImageClick} energy={energy} />
         </Box>
         <HStack justify="space-between">
           <Text fontSize="xl" fontWeight="bold">
-            energy {energy} / 1000
+            energy {energy} / {maxEnergy}
           </Text>
-          <Button leftIcon={<FaRocket />} variant="solid" bg={"#00ADE0"} colorScheme="brand.100" size="sm" w={100} onClick={upgradeOnOpen}>
+          <Button leftIcon={<FaRocket />} variant="solid" bg={"#676167"} colorScheme="brand.100" size="sm" w={100} onClick={upgradeOnOpen}>
             Upgrade
           </Button>
         </HStack>
