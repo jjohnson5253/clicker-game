@@ -19,6 +19,8 @@ const App = () => {
   const [score, setScore] = useState(null);
   const [totalScore, setTotalScore] = useState(null);
   const [energy, setEnergy] = useState(null);
+  const maxEnergy = 1000;
+  const energyInterval = 2000;
 
   window.scrollTo(0, 0);
 
@@ -44,10 +46,10 @@ const App = () => {
 
   // increase energy
   useEffect(() => {
-    if (energy < 1000){
+    if (energy < maxEnergy){
       const interval = setInterval(() => {
         setEnergy(energy => energy + 1);
-      }, 2000);
+      }, energyInterval);
       return () => clearInterval(interval);
     }
   }, []);
@@ -55,10 +57,12 @@ const App = () => {
   // update score on supabase
   useEffect(() => {
     if (userId && score) {
+      const timestamp = new Date().toISOString();
       let updateData = { 
         score: score,
         total_score: totalScore,
-        energy: energy
+        energy: energy,
+        updated_at: timestamp,
       };
       const updateSupabase = async () => {
         const { error } = await supabase
@@ -71,7 +75,7 @@ const App = () => {
       }
       updateSupabase();
     }
-  }, [score]);
+  }, [score, energy]);
 
   // get user from supabase
   const getUser = async (id) => {
@@ -102,8 +106,23 @@ const App = () => {
       console.log("User found: ", data);
       setScore(data[0].score);
       setTotalScore(data[0].total_score);
+      //setEnergy(data[0].energy);
+      calculateEnergy(data[0].energy, data[0].updated_at);
     }
   };
+
+  const calculateEnergy = (initialEnergy, last_updated_at) =>{
+    const lastUpdated = new Date(last_updated_at);
+    const currentTime = new Date();
+    const timeDifference = currentTime - lastUpdated;
+    const energyToGive = Math.floor(timeDifference / energyInterval); // 1 energy per 2 seconds
+    if((energyToGive + initialEnergy) > maxEnergy) {
+      setEnergy(maxEnergy);
+    }
+    else {
+      setEnergy(initialEnergy + energyToGive);
+    }
+  }
 
   const handleImageClick = async () => {
     console.log("Image clicked");
