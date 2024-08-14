@@ -5,7 +5,7 @@ import { motion, useAnimation } from 'framer-motion';
 import {useHapticFeedback} from "@vkruglikov/react-telegram-web-app";
 
 // eslint-disable-next-line
-const TiltImage = ({ imageSrc, altText, onClick, ...tiltProps }) => {
+const TiltImage = ({ imageSrc, altText, onClick, energy, ...tiltProps }) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [clickPosition, setClickPosition] = useState({ x: 0, y: 0 });
   const controls = useAnimation();
@@ -37,12 +37,12 @@ const TiltImage = ({ imageSrc, altText, onClick, ...tiltProps }) => {
     <div ref={containerRef} style={{ position: 'relative' }} onClick={handleClick}>
       <Tilt {...tiltProps}>
         <Image
-          boxSize="300px"
+          width="300px"
           src={imageSrc}
           alt={altText}
         />
       </Tilt>
-      {isAnimating && (
+      {isAnimating && energy !== 0 && (
         <motion.div
           animate={controls}
           initial={{ y: clickPosition.y, opacity: 1 }}
@@ -54,7 +54,7 @@ const TiltImage = ({ imageSrc, altText, onClick, ...tiltProps }) => {
             color: 'white',
           }}
         >
-          <Text fontSize="4xl">+1</Text>
+          <Text fontSize="4xl">🗽</Text>
         </motion.div>
       )}
     </div>

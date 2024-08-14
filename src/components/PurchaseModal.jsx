@@ -2,9 +2,13 @@ import { Box, Button, Center, Image, Modal, ModalBody, ModalCloseButton, ModalCo
 import { supabase } from "../utils/supabase";
 
 // eslint-disable-next-line
-export default function PurchaseModal({ onClose, isOpen, selectedUpgrade, setPurchaseMade, score, setScore, userId }) {
+export default function PurchaseModal({ onClose, isOpen, selectedUpgrade, setPurchaseMade, setPassivePointsPerHour, score, setScore, userId }) {
 
   const handlePurchase = async () => {
+    // Check if the user has enough points to purchase the upgrade
+    if(score < selectedUpgrade.cost) {
+      return;
+    }
     // subtract the cost of the upgrade from the user's score
     setScore(score - selectedUpgrade.cost);
 
@@ -57,6 +61,8 @@ export default function PurchaseModal({ onClose, isOpen, selectedUpgrade, setPur
       .eq('telegram_id', userId);
 
     setPurchaseMade(true);
+
+    setPassivePointsPerHour(newPassivePoints)
     onClose();
   }
 
