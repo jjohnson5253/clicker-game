@@ -5,6 +5,10 @@ import { supabase } from "../utils/supabase";
 export default function PurchaseModal({ onClose, isOpen, selectedUpgrade, setPurchaseMade, score, setScore, userId }) {
 
   const handlePurchase = async () => {
+    // Check if the user has enough points to purchase the upgrade
+    if(score < selectedUpgrade.cost) {
+      return;
+    }
     // subtract the cost of the upgrade from the user's score
     setScore(score - selectedUpgrade.cost);
 
