@@ -53,12 +53,10 @@ const App = () => {
       }, energyInterval);
       return () => clearInterval(interval);
     }
-  }, []);
+  }, [energy]);
 
   useEffect(() => {
     if (passivePointsPerHour > 0) {
-      console.log("passivePointsPerHourr: ", passivePointsPerHour);
-      console.log("intervanl: ", (60 * 60 * 1000) / passivePointsPerHour);
       const interval = setInterval(() => {
         setTotalScore((prevTotalScore) => prevTotalScore + 1);
         setScore((prevScore) => prevScore + 1);
