@@ -6,7 +6,7 @@ import PurchaseModal from "./PurchaseModal";
 import { supabase } from "../utils/supabase";
 
 // eslint-disable-next-line
-export default function UpgradeModal({ onClose, isOpen, score, setScore, userId}) {
+export default function UpgradeModal({ onClose, isOpen, score, setScore, setPassivePointsPerHour, userId}) {
   const { isOpen: blasterIsOpen, onOpen: blasterOnOpen, onClose: blasterOnClose } = useDisclosure();
   const { isOpen: bagIsOpen, onOpen: bagOnOpen, onClose: bagOnClose } = useDisclosure();
   const { isOpen: purchaseIsOpen, onOpen: purchaseOnOpen, onClose: purchaseOnClose } = useDisclosure();
@@ -71,7 +71,7 @@ export default function UpgradeModal({ onClose, isOpen, score, setScore, userId}
     <>
       <BlasterModal isOpen={blasterIsOpen} onClose={blasterOnClose} />
       <BagModal isOpen={bagIsOpen} onClose={bagOnClose} />
-      <PurchaseModal isOpen={purchaseIsOpen} onClose={purchaseOnClose} selectedUpgrade={selectedUpgrade} setPurchaseMade={setPurchaseMade} score={score} setScore={setScore} userId={userId}/>
+      <PurchaseModal isOpen={purchaseIsOpen} onClose={purchaseOnClose} selectedUpgrade={selectedUpgrade} setPurchaseMade={setPurchaseMade} setPassivePointsPerHour={setPassivePointsPerHour} score={score} setScore={setScore} userId={userId}/>
       <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent bg={"#586888"} m={2} h={"100vh"} textAlign={"center"}>

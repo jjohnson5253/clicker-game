@@ -208,7 +208,7 @@ const App = () => {
       </VStack>
       <Spacer />
       <AirdropModal isOpen={isOpen} onClose={onClose} />
-      <UpgradeModal isOpen={upgradeIsOpen} onClose={upgradeOnClose} score={score} setScore={setScore} userId={userId}/>
+      <UpgradeModal isOpen={upgradeIsOpen} onClose={upgradeOnClose} score={score} setScore={setScore} setPassivePointsPerHour={setPassivePointsPerHour} userId={userId}/>
     </Box>
   );
 };
