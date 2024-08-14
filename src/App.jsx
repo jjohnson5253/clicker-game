@@ -219,14 +219,6 @@ const App = () => {
             Upgrade
           </Button>
         </HStack>
-        <HStack justify="space-between">
-          <Button variant={party === "republican" ? "solid" : "outline"} onClick={() => handlePartySelect("republican")}>
-            Republican
-          </Button>
-          <Button variant={party === "democrat" ? "solid" : "outline"} onClick={() => handlePartySelect("democrat")}>
-            Democrat
-          </Button>
-        </HStack>
       </VStack>
       <Spacer />
       <AirdropModal isOpen={isOpen} onClose={onClose} />
