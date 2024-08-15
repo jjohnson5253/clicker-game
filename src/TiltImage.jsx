@@ -54,7 +54,7 @@ const TiltImage = ({ imageSrc, altText, onClick, energy, ...tiltProps }) => {
             color: 'white',
           }}
         >
-          <Text fontSize="4xl">🗽</Text>
+          <Text fontSize="5xl">🗽</Text>
         </motion.div>
       )}
     </div>

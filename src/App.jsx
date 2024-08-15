@@ -175,7 +175,7 @@ const App = () => {
             colorScheme="white"
             onClick={() => handlePartySelect("democrat")}
           >
-            <Image src="/left.png" mr={1} /> Democrat
+            <Image src="/right.png" mr={1} /> Republican
           </Button>
           <Button
             p={8}
@@ -186,23 +186,25 @@ const App = () => {
             onClick={() => handlePartySelect("republican")}
             textShadow={"1px 1px 1px #000E8A"}
           >
-            Republican <Image ml={1} src="/right.png" />
+            Democrat <Image ml={1} src="/left.png" />
           </Button>
         </HStack>
-        <TopScore score1={10} score2={90} />
+        <Text fontSize="xl" fontWeight="bold">
+            Total Votes: {totalScore}
+          </Text>
         <HStack justify="space-between">
           <Text fontSize="xl" fontWeight="bold">
-            Points Per Hour: {passivePointsPerHour}
+            Money Per Hour: ${passivePointsPerHour}
           </Text>
         </HStack>
         <HStack justify="center" mt={4}>
           <Text fontSize="3xl" fontWeight="bold">
-            {score}
+            ${score}
           </Text>
         </HStack>
         <Box align="center" mt={4}>
           <TiltImage
-            imageSrc={party === "democrat" ? "/left_big.png" : "/right_big.png"}
+            imageSrc={"/flag.png"}
             altText="Flerg"
             tiltReverse="true"
             tiltMaxAngleX={30}
@@ -215,7 +217,7 @@ const App = () => {
           <Text fontSize="xl" fontWeight="bold">
             energy {energy} / {maxEnergy}
           </Text>
-          <Button leftIcon={<FaRocket />} variant="solid" bg={"#676167"} colorScheme="brand.100" size="sm" w={100} onClick={upgradeOnOpen}>
+          <Button leftIcon={<FaRocket />} variant="solid" bg={"#ffffff"} size="sm" w={100} onClick={upgradeOnOpen}>
             Upgrade
           </Button>
         </HStack>
