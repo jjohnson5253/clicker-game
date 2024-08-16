@@ -57,12 +57,15 @@ const App = () => {
     }
   }, [energy]);
 
+  // increase passive score
   useEffect(() => {
     if (passivePointsPerHour > 0) {
+      const pointsPerTwoSeconds = Math.round(passivePointsPerHour / 7200);  
       const interval = setInterval(() => {
-        setTotalScore((prevTotalScore) => prevTotalScore + 1);
-        setScore((prevScore) => prevScore + 1);
-      }, (60 * 60 * 1000) / passivePointsPerHour); // Convert pointsPerHour to milliseconds
+        const pointsToAdd = pointsPerTwoSeconds;
+        setTotalScore((prevTotalScore) => prevTotalScore + pointsToAdd);
+        setScore((prevScore) => prevScore + pointsToAdd);
+      }, 2000);
       return () => clearInterval(interval);
     }
   }, [passivePointsPerHour]);

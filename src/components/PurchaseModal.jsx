@@ -83,7 +83,6 @@ export default function PurchaseModal({ onClose, isOpen, selectedUpgrade, setPur
             <Text mt={4}>Points per hour</Text>
             <Box mx={"auto"}>
               <Center>
-                <Image src="/coin.png" w={6} alt="Coin" />
                 <Text as="span" fontSize="md" ml={1}>
                   +{selectedUpgrade.pointsPerHour}
                 </Text>
@@ -93,14 +92,13 @@ export default function PurchaseModal({ onClose, isOpen, selectedUpgrade, setPur
             <Text mt={4}>Cost</Text>
             <Box mx={"auto"}>
               <Center>
-                <Image src="/coin.png" w={6} alt="Coin" />
                 <Text as="span" fontSize="md" ml={1}>
-                  {selectedUpgrade.cost}
+                  ${selectedUpgrade.cost}
                 </Text>
               </Center>
             </Box>
           </ModalBody>
-          <Button mx={"auto"} h={14} mb={10} w="90%" colorScheme="blue" bg={"#00ADE0"} onClick={handlePurchase}>
+          <Button mx={"auto"} h={14} mb={10} w="90%" variant="solid" bg={"#ffffff"} onClick={handlePurchase}>
             Purchase
           </Button>
         </ModalContent>
