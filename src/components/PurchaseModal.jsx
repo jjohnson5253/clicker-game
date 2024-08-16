@@ -73,6 +73,9 @@ export default function PurchaseModal({ onClose, isOpen, selectedUpgrade, setPur
         <ModalContent bg={"#586888"} m={2} h={"100vh"} textAlign={"center"}>
           <ModalCloseButton />
           <ModalBody color={"white"} mt={12}>
+            <Text fontSize="xl" mb={3}>
+            ${score}
+            </Text>
             <Center>
               <Image src="/flag.png" w={24} />{" "}
             </Center>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Image, Box, SimpleGrid, Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, useDisclosure } from "@chakra-ui/react";
+import { Image, Box, SimpleGrid, Text, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, useDisclosure } from "@chakra-ui/react";
 import BlasterModal from "./BlasterModal";
 import BagModal from "./BagModal";
 import PurchaseModal from "./PurchaseModal";
@@ -76,7 +76,10 @@ export default function UpgradeModal({ onClose, isOpen, score, setScore, setPass
       <ModalOverlay />
       <ModalContent bg={"#586888"} m={2} h={"100vh"} textAlign={"center"}>
         <ModalCloseButton />
-        <ModalBody color={"white"} mt={24}>
+        <ModalBody color={"white"} mt={19}>
+          <Text fontSize="xl" mb={3}>
+          ${score}
+          </Text>
           <Box overflowY={"scroll"} h={"80vh"}>
             <SimpleGrid columns={2} spacing={4}>
               {!isLoadingUpgradesToDisplay && upgradesToDisplay && Object.keys(upgradesToDisplay).map((name, index) => (
