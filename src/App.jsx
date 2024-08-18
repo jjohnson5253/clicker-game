@@ -13,7 +13,7 @@ const App = () => {
   // todo: fix telegram provider
   //const { telegramUser } = useTelegram();
   const [telegramUser, setTelegramUser] = useState(null);
-  const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: upgradeIsOpen, onOpen: upgradeOnOpen, onClose: upgradeOnClose } = useDisclosure();
 
@@ -227,7 +227,7 @@ const App = () => {
       </VStack>
       <Spacer />
       <AirdropModal isOpen={isOpen} onClose={onClose} />
-      <UpgradeModal isOpen={upgradeIsOpen} onClose={upgradeOnClose} score={score} setScore={setScore} setPassivePointsPerHour={setPassivePointsPerHour} userId={userId} />
+      <UpgradeModal isOpen={upgradeIsOpen} onClose={upgradeOnClose} score={score} setScore={setScore} passivePointsPerHour={passivePointsPerHour} setPassivePointsPerHour={setPassivePointsPerHour} userId={userId} />
     </Box>
   );
 };

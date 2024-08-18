@@ -2,7 +2,7 @@ import { Box, Button, Center, Image, Modal, ModalBody, ModalCloseButton, ModalCo
 import { supabase } from "../utils/supabase";
 
 // eslint-disable-next-line
-export default function PurchaseModal({ onClose, isOpen, selectedUpgrade, setPurchaseMade, setPassivePointsPerHour, score, setScore, userId }) {
+export default function PurchaseModal({ onClose, isOpen, selectedUpgrade, setPurchaseMade, passivePointsPerHour, setPassivePointsPerHour, score, setScore, userId }) {
 
   const handlePurchase = async () => {
     // Check if the user has enough points to purchase the upgrade
@@ -12,57 +12,40 @@ export default function PurchaseModal({ onClose, isOpen, selectedUpgrade, setPur
     // subtract the cost of the upgrade from the user's score
     setScore(score - selectedUpgrade.cost);
 
-    // Get the upgrade id
-    const { data } = await supabase
-    .from('upgrades')
-    .select('id')
-    .eq('name', selectedUpgrade.name)
-    .eq('level', selectedUpgrade.level)
-    .single();
-  
-    if (data) {
-      const upgradeId = data.id;
-      // Add the new upgrade to user_upgrades
-      await supabase
+    // This is the first time buying upgrade, so add to us
+    if(selectedUpgrade.level === 1) {
+      // Update the upgrade level
+      const { data, error } = await supabase
         .from('user_upgrades')
-        .insert([{ user_telegram_id: userId, upgrade_id: upgradeId }]);
-    
-      // Remove the previous upgrade from user_upgrades
-      const previousUpgradeLevel = selectedUpgrade.level - 1;
-      const previousUpgradeData = await supabase
-        .from('upgrades')
-        .select('id')
-        .eq('name', selectedUpgrade.name)
-        .eq('level', previousUpgradeLevel)
+        .insert({
+          level: selectedUpgrade.level,
+          upgrade_name: selectedUpgrade.name,
+          user_telegram_id: userId,
+          upgrade_id: selectedUpgrade.id
+        })
         .single();
-    
-      if (previousUpgradeData.data) {
-        const previousUpgradeId = previousUpgradeData.data.id;
-        console.log('previousUpgradeId: ', previousUpgradeId);
-        console.log('userId: ', userId);
-        await supabase
-          .from('user_upgrades')
-          .delete()
-          .eq('user_telegram_id', userId)
-          .eq('upgrade_id', previousUpgradeId);
-      }
+        console.log("insert error: ", error);
+    } else{
+      // Update the upgrade level
+      const { data, error } = await supabase
+        .from('user_upgrades')
+        .update({ level: selectedUpgrade.level})
+        .eq('upgrade_name', selectedUpgrade.name)
+        .eq('user_telegram_id', userId)
+        .single();
+      console.log("update error: ", error);
     }
 
     // update passive points for user
-    const passivePointsData = await supabase
-      .from('clicker_users')
-      .select('passive_points_per_hour')
-      .eq('telegram_id', userId)
-      .single();
-    const newPassivePoints =  passivePointsData.data.passive_points_per_hour + selectedUpgrade.pointsPerHour;
-    await supabase
+    const newPassivePoints =  passivePointsPerHour + selectedUpgrade.pointsPerHour;
+    const { data, error } = await supabase
       .from('clicker_users')
       .update({ passive_points_per_hour: newPassivePoints })
       .eq('telegram_id', userId);
+    console.log("update passive score error: ", error);
 
     setPurchaseMade(true);
-
-    setPassivePointsPerHour(newPassivePoints)
+    setPassivePointsPerHour(newPassivePoints);
     onClose();
   }
 

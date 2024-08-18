@@ -6,7 +6,7 @@ import PurchaseModal from "./PurchaseModal";
 import { supabase } from "../utils/supabase";
 
 // eslint-disable-next-line
-export default function UpgradeModal({ onClose, isOpen, score, setScore, setPassivePointsPerHour, userId}) {
+export default function UpgradeModal({ onClose, isOpen, score, setScore, passivePointsPerHour, setPassivePointsPerHour, userId}) {
   const { isOpen: blasterIsOpen, onOpen: blasterOnOpen, onClose: blasterOnClose } = useDisclosure();
   const { isOpen: bagIsOpen, onOpen: bagOnOpen, onClose: bagOnClose } = useDisclosure();
   const { isOpen: purchaseIsOpen, onOpen: purchaseOnOpen, onClose: purchaseOnClose } = useDisclosure();
@@ -16,7 +16,7 @@ export default function UpgradeModal({ onClose, isOpen, score, setScore, setPass
   const [purchaseMade, setPurchaseMade] = useState(true);
 
   useEffect(() => {
-    if( purchaseMade ) {
+    if( purchaseMade && userId !== null) {
       setIsLoadingUpgradesToDisplay(true);
       getNextUpgrades(userId).then((nextUpgrades) => {
         console.log("nextUpgrades: ", nextUpgrades);
@@ -28,50 +28,43 @@ export default function UpgradeModal({ onClose, isOpen, score, setScore, setPass
   }, [userId, purchaseMade]);
 
   const getNextUpgrades = async (telegramUserId) => {
-    // Get the user's current upgrades
-    const { data: userUpgrades } = await supabase
-      .from("user_upgrades")
-      .select("upgrade_id")
-      .eq("user_telegram_id", telegramUserId);
-  
-    // Get all upgrades
-    const { data: allUpgrades } = await supabase
-      .from('upgrades')
-      .select('name, level, cost, points_per_hour, id');
-  
-    // Group upgrades by name
-    const upgradesByName = {};
-    allUpgrades.forEach((upgrade) => {
-      if (!upgradesByName[upgrade.name]) {
-        upgradesByName[upgrade.name] = [];
+    if(telegramUserId) {
+      console.log("!!!@#$#$@# telegramUserId: ", telegramUserId);
+      const userUpgrades = await supabase
+        .from("user_upgrades")
+        .select("level, upgrade_name")
+        .eq("user_telegram_id", telegramUserId);
+
+      const upgrades = await supabase
+        .from('upgrades')
+        .select('*');
+
+      const filteredUpgrades = [];
+
+      for (const upgrade of upgrades.data) {
+        const existingUpgrade = filteredUpgrades.find(u => u.name === upgrade.name);
+        if (!existingUpgrade) {
+          const userUpgrade = userUpgrades.data.find(u => u.upgrade_name === upgrade.name);
+          if (userUpgrade) {
+            const level = userUpgrade.level + 1;
+            const upgradedItem = upgrades.data.find(u => u.name === upgrade.name && u.level === level);
+            filteredUpgrades.push(upgradedItem);
+          } else {
+            const level1Item = upgrades.data.find(u => u.name === upgrade.name && u.level === 1);
+            filteredUpgrades.push(level1Item);
+          }
+        }
       }
-      upgradesByName[upgrade.name].push(upgrade);
-    });
-  
-    // Find the next upgrades for each name
-    const nextUpgrades = {};
-    Object.keys(upgradesByName).forEach((name) => {
-      const userUpgradeLevel = userUpgrades.find((userUpgrade) => {
-        const upgrade = allUpgrades.find((u) => u.id === userUpgrade.upgrade_id && u.name === name);
-        return upgrade;
-      })?.upgrade_id;
-  
-      if (userUpgradeLevel) {
-        const currentUpgrade = allUpgrades.find((u) => u.id === userUpgradeLevel);
-        const nextUpgrade = upgradesByName[name].find((u) => u.level === currentUpgrade.level + 1);
-        nextUpgrades[name] = nextUpgrade;
-      } else {
-        nextUpgrades[name] = upgradesByName[name][0];
-      }
-    });
-    return nextUpgrades;
+    
+      return filteredUpgrades;
+    }
   }
 
   return (
     <>
       <BlasterModal isOpen={blasterIsOpen} onClose={blasterOnClose} />
       <BagModal isOpen={bagIsOpen} onClose={bagOnClose} />
-      <PurchaseModal isOpen={purchaseIsOpen} onClose={purchaseOnClose} selectedUpgrade={selectedUpgrade} setPurchaseMade={setPurchaseMade} setPassivePointsPerHour={setPassivePointsPerHour} score={score} setScore={setScore} userId={userId}/>
+      <PurchaseModal isOpen={purchaseIsOpen} onClose={purchaseOnClose} selectedUpgrade={selectedUpgrade} setPurchaseMade={setPurchaseMade} passivePointsPerHour={passivePointsPerHour} setPassivePointsPerHour={setPassivePointsPerHour} score={score} setScore={setScore} userId={userId}/>
       <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent bg={"#586888"} m={2} h={"100vh"} textAlign={"center"}>
@@ -95,16 +88,17 @@ export default function UpgradeModal({ onClose, isOpen, score, setScore, setPass
                       return;
                     }
                     setSelectedUpgrade({
-                      name,
+                      name: upgradesToDisplay[name].name,
                       level: upgradesToDisplay[name].level,
                       cost: upgradesToDisplay[name].cost,
                       pointsPerHour: upgradesToDisplay[name].points_per_hour,
+                      id: upgradesToDisplay[name].id,
                     });
                     purchaseOnOpen();
                   }}
                 >
                   <Image src="/flag.png" w="20" mx="auto"/>
-                  <h2>{name}</h2>
+                  <h2>{upgradesToDisplay[name].name}</h2>
                   <p>Level: {upgradesToDisplay[name].level}</p>
                   <p>Points per hour: {upgradesToDisplay[name].points_per_hour}</p>
                   <p>Cost: {upgradesToDisplay[name].cost}</p>
