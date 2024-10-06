@@ -166,7 +166,10 @@ const App = () => {
   };
 
   return (
-    <Box bg={party === "democrat" ? "#FFC8C8" : "#CCC8FF"} color="white" minH="100vh" p={4}>
+
+    <Box bgImage="url('/bg.png')"  bgPosition="center"
+    bgRepeat="no-repeat"
+    bgSize="cover" color="white" minH="100vh" p={4}>
       <VStack spacing={4} mt={6} align="stretch">
         <HStack justify="space-between">
           <Button
@@ -229,6 +232,7 @@ const App = () => {
       <AirdropModal isOpen={isOpen} onClose={onClose} />
       <UpgradeModal isOpen={upgradeIsOpen} onClose={upgradeOnClose} score={score} setScore={setScore} passivePointsPerHour={passivePointsPerHour} setPassivePointsPerHour={setPassivePointsPerHour} userId={userId} />
     </Box>
+  
   );
 };
 

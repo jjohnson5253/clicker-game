@@ -40,6 +40,8 @@ const TiltImage = ({ imageSrc, altText, onClick, energy, ...tiltProps }) => {
           width="300px"
           src={imageSrc}
           alt={altText}
+          rounded="16px"
+          border="4px solid #ffffff"
         />
       </Tilt>
       {isAnimating && energy !== 0 && (
