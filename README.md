@@ -1,1 +1,1 @@
-Clicker game. Using Vite.
+Clicker game. Using Vite
