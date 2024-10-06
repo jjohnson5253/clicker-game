@@ -35,11 +35,16 @@ const TiltImage = ({ imageSrc, altText, onClick, energy, ...tiltProps }) => {
 
   return (
     <div ref={containerRef} style={{ position: 'relative' }} onClick={handleClick}>
-      <Tilt {...tiltProps}>
+      
+      <Tilt {...tiltProps} >
+  
         <Image
           width="300px"
           src={imageSrc}
           alt={altText}
+          rounded="16px"
+            border="4px solid white"
+              boxShadow="0 0 20px 10px rgba(255, 255, 255, 0.5)"
         />
       </Tilt>
       {isAnimating && energy !== 0 && (
