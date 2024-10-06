@@ -179,7 +179,7 @@ const App = () => {
        <ProfitPerHour passivePointsPerHour={passivePointsPerHour} />
 
        <TopScore score={score} /> 
-        <Box align="center" mt={4}>
+        <Box align="center" mt={8}>
           <TiltImage
             imageSrc={"/flag.png"}
             altText="Flerg"
@@ -190,12 +190,16 @@ const App = () => {
             energy={energy}
           />
         </Box>
+        <HStack justify="space-between" p={4} position="absolute" bottom="20" left="0" right="0">
         <HStack justify="space-between">
-          <Text fontSize="xl" fontWeight="bold">
-            energy {energy} / {maxEnergy}
+          <Image src="/energy_icon.png" w={'23px'} h={'30px'} />
+          <Text fontSize="15px" fontWeight="bold">
+             {energy} / {maxEnergy}
           </Text>
-          <Button leftIcon={<FaRocket />} variant="solid" bg={"#ffffff"} size="sm" w={100} onClick={upgradeOnOpen}>
-            Upgrade
+          </HStack>
+          <Button color="white" bgGradient="linear-gradient(to-r, #091E3A, #2D9EE0)" borderRadius={'10px'} border={'2px solid #ffffff'}  w={'110px'} h={'37px'} onClick={upgradeOnOpen}>
+            <Image src="/upgrade_icon.png" w={'52px'} h={'52px'} position={'absolute'} top={'-10px'} left={'-10px'} />
+           <span style={{fontSize: '14px', marginLeft: '16px', fontWeight: 'normal'}}>Upgrade</span>
           </Button>
         </HStack>
       </VStack>
