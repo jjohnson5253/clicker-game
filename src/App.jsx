@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
-import { Box, Text, useDisclosure, Button, Image, Progress, VStack, HStack, Spacer } from "@chakra-ui/react";
-import { FaRocket, FaDollarSign } from "react-icons/fa";
+import { Box, Text, useDisclosure, Button, VStack, HStack, Spacer, Image} from "@chakra-ui/react";
+import { FaRocket,  } from "react-icons/fa";
 import TiltImage from "./TiltImage";
-import TopScore from "./components/TopScore";
 import AirdropModal from "./components/AirdropModal";
 import UpgradeModal from "./components/UpgradeModal";
 import { useTelegram } from "./hooks/useTelegram";
 import { supabase } from "./utils/supabase";
+import Topbar from "./components/Topbar";
+import ProfitPerHour from "./components/ProfitPerHour"
+import TopScore from "./components/TopScore"
 const isProduction = import.meta.env.VITE_NODE_ENV === "production";
 
 const App = () => {
@@ -167,47 +169,16 @@ const App = () => {
 
   return (
 
-    <Box bgImage="url('/bg.png')"  bgPosition="center"
+    <Box  bgPosition="center"
     bgRepeat="no-repeat"
-    bgSize="cover" color="white" minH="100vh" p={4}>
-      <VStack spacing={4} mt={6} align="stretch">
-        <HStack justify="space-between">
-          <Button
-            border={party === "democrat" ? "4px" : "0px"}
-            textShadow={"1px 1px 1px #C91605"}
-            borderColor={"#C91605"}
-            borderRadius={16}
-            p={8}
-            colorScheme="white"
-            onClick={() => handlePartySelect("democrat")}
-          >
-            <Image src="/right.png" mr={1} /> Republican
-          </Button>
-          <Button
-            p={8}
-            border={party === "republican" ? "4px" : "0px"}
-            borderColor={"#000E8A"}
-            borderRadius={16}
-            colorScheme="white"
-            onClick={() => handlePartySelect("republican")}
-            textShadow={"1px 1px 1px #000E8A"}
-          >
-            Democrat <Image ml={1} src="/left.png" />
-          </Button>
-        </HStack>
-        <Text fontSize="xl" fontWeight="bold">
-            Total Votes: {totalScore}
-          </Text>
-        <HStack justify="space-between">
-          <Text fontSize="xl" fontWeight="bold">
-            Money Per Hour: ${passivePointsPerHour}
-          </Text>
-        </HStack>
-        <HStack justify="center" mt={4}>
-          <Text fontSize="3xl" fontWeight="bold">
-            ${score}
-          </Text>
-        </HStack>
+    bgSize="cover" color="white" bgColor={'#042152'}
+    bgGradient={`linear(to-b, rgba(255, 255, 255, 0), rgba(49, 157, 223, 1)), url('/bg.png')`}
+   minH="100vh">
+      <VStack spacing={4} align="stretch">
+   <Topbar handlePartySelect={handlePartySelect} party={party} totalScore={totalScore} />
+       <ProfitPerHour passivePointsPerHour={passivePointsPerHour} />
+
+       <TopScore score={score} /> 
         <Box align="center" mt={4}>
           <TiltImage
             imageSrc={"/flag.png"}
